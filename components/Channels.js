@@ -30,6 +30,7 @@ var Channels = React.createClass({
     var new_channel = $('#new-channel-name').val();
     if (new_channel.trim() != "") {
         this.props.createChannel(new_channel);
+        this.switchChannel(new_channel);
         this.closeModal();
     }
   },
@@ -39,10 +40,17 @@ var Channels = React.createClass({
     this.joinNewChannel();
   },
 
+  switchChannel: function(channelName) {
+    console.log('Switch Channel: ', channelName);
+    this.props.joinChannel(channelName);
+  },
+
   render: function() {
+    var that = this;
+    var currentChannel = this.props.currentChannel;
     var channelList = this.props.channels.map(function(channel, i){
         return (
-          <li key={i} className="channel active">
+          <li key={i} className={channel === currentChannel ? 'channel active' : 'channel'} onClick={that.switchChannel.bind(that, channel)}>
             <a className="channel_name">
               <span className="unread">0</span>
               <span><span className="prefix">#</span>{channel}</span>
@@ -66,7 +74,7 @@ var Channels = React.createClass({
           <h2 className="text-center">Enter a channel to join</h2>
           <div>
             # <input id="new-channel-name" type="text" onKeyPress={this.onEnter} />
-            <button className="btn" onClick={this.props.joinNewChannel}>Join</button>
+            <button className="btn" onClick={this.joinNewChannel}>Join</button>
           </div>
         </Modal>
       </div>
